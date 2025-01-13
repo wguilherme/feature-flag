@@ -1,0 +1,20 @@
+FROM node:20
+
+WORKDIR /app
+
+# Instalar dependências globais
+RUN npm install -g nx@latest
+
+# Copiar package.json e package-lock.json
+COPY package*.json ./
+COPY nx.json ./
+COPY tsconfig*.json ./
+
+# Instalar dependências do projeto
+RUN npm install --legacy-peer-deps
+
+# Copiar o resto do código
+COPY . .
+
+# Expor portas necessárias
+EXPOSE 3000 4200 9229
