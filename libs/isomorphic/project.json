@@ -1,0 +1,26 @@
+{
+  "name": "isomorphic",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/isomorphic/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:swc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/isomorphic",
+        "main": "libs/isomorphic/src/index.ts",
+        "tsConfig": "libs/isomorphic/tsconfig.lib.json",
+        "assets": ["libs/isomorphic/*.md"]
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "reportsDirectory": "../../coverage/libs/isomorphic"
+      }
+    }
+  }
+}
