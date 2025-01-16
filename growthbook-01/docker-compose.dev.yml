@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/dev/Dockerfile.dev
+    command: npx nx serve frontend --configuration=development --watch
+    ports:
+      - "4200:4200"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    networks:
+      - app-network
+    depends_on:
+      growthbook:
+        condition: service_healthy
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/dev/Dockerfile.dev
+    command: npx nx serve backend --configuration=development --watch
+    ports:
+      - "3000:3000"
+      - "9229:9229"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - GROWTHBOOK_API_HOST=http://localhost:3100
+      - GROWTHBOOK_CLIENT_KEY=sdk-OfdGYQEJohOkYfC4
+    networks:
+      - app-network
+    depends_on:
+      mongo:
+        condition: service_healthy
+      growthbook:
+        condition: service_healthy
+
+  mongo:
+    image: "mongo:latest"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    volumes:
+      - mongodata:/data/db
+    networks:
+      - app-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  growthbook:
+    image: "growthbook/growthbook:latest"
+    ports:
+      - "3001:3000"  # UI
+      - "3100:3100"  # API
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      - MONGODB_URI=mongodb://root:password@mongo:27017/growthbook?authSource=admin
+      - JWT_SECRET=your-jwt-secret-key
+      - ENCRYPTION_KEY=random-32-character-string-here123
+      - NODE_ENV=development
+      - CORS_ORIGIN_REGEX=.*
+      - API_HOST=http://localhost:3100
+      - APP_ORIGIN=http://localhost:3001
+      - DISABLE_TELEMETRY=true
+      - DISABLE_SIGNUP=false
+      - ALLOW_INVALID_CERTS=true
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-check-certificate", "-qO-", "http://localhost:3100/api/features"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+volumes:
+  mongodata:
+
+networks:
+  app-network:
+    driver: bridge
