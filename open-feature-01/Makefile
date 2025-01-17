@@ -1,9 +1,19 @@
 #!/bin/bash
 
-.PHONY: up down start stop k8s-build k8s-deploy k8s-delete
+.PHONY: dev dev-k8s down start stop k8s-build k8s-deploy k8s-delete
 
-up:
+# Development with Docker Compose
+dev:
 	docker-compose up -d --build
+
+# Development with Kind/Kubernetes
+dev-k8s: k8s-deploy
+	@echo "Starting development with Kubernetes..."
+	@echo "Watching for changes in source code..."
+	@fswatch -o ./src/ ./k8s/ | while read f; do \
+		echo "Changes detected, rebuilding and redeploying..."; \
+		make k8s-deploy; \
+	done
 
 down:
 	docker-compose down
@@ -20,6 +30,7 @@ k8s-build:
 
 k8s-deploy: k8s-build
 	kubectl apply -f k8s/app.yaml
+	kubectl rollout restart deployment/hello-world-app
 	@echo "Waiting for deployment to be ready..."
 	kubectl wait --for=condition=available deployment/hello-world-app --timeout=60s
 	@echo "Deployment is ready!"
