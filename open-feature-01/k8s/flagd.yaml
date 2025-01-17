@@ -19,8 +19,15 @@ spec:
         - start
         - --uri
         - file:/flags/flags.yaml
+        - --port
+        - "8013"
+        - --management-port
+        - "8014"
         ports:
-        - containerPort: 8013
+        - name: http
+          containerPort: 8013
+        - name: management
+          containerPort: 8014
         volumeMounts:
         - name: flags-volume
           mountPath: /flags
@@ -37,5 +44,9 @@ spec:
   selector:
     app: flagd
   ports:
-  - port: 8013
-    targetPort: 8013
+  - name: http
+    port: 8013
+    targetPort: http
+  - name: management
+    port: 8014
+    targetPort: management

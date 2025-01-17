@@ -1,29 +1,49 @@
 // app.js
 const express = require('express');
-const { OpenFeature } = require('@openfeature/js-sdk');
+const { OpenFeature } = require('@openfeature/server-sdk');
 const { FlagdProvider } = require('@openfeature/flagd-provider');
 
 const app = express();
 
-// Configurar OpenFeature
+// Configurar OpenFeature com gRPC
 const provider = new FlagdProvider({
-  host: 'flagd', // nome do service no K8s
+  host: 'flagd',
   port: 8013
 });
 
-OpenFeature.setProvider(provider);
-const client = OpenFeature.getClient();
+async function startServer() {
+  try {
+    await OpenFeature.setProvider(provider);
+    console.log('OpenFeature provider initialized successfully');
+    
+    const client = OpenFeature.getClient();
 
-app.get('/', async (req, res) => {
-  const novaFuncaoAtiva = await client.getBooleanValue('nova-funcao', false);
+    app.get('/', async (req, res) => {
+      try {
+        const novaFuncaoAtiva = await client.getBooleanValue('nova-funcao', false);
+        console.log('novaFuncaoAtiva:', novaFuncaoAtiva);
+        
+        if (novaFuncaoAtiva) {
+          res.send('Nova função ativa!');
+        } else {
+          res.send('Função desativada');
+        }
+      } catch (error) {
+        console.error('Erro ao obter feature flag:', error);
+        res.status(500).send('Erro ao verificar feature flag');
+      }
+    });
 
-  console.log('novaFuncaoAtiva', novaFuncaoAtiva);
-  
-  if (novaFuncaoAtiva) {
-    res.send('Nova função ativa!');
-  } else {
-    res.send('Função desativada');
+    app.listen(3000, () => {
+      console.log('Server running on port 3000');
+    });
+  } catch (error) {
+    console.error('Error initializing OpenFeature:', error);
+    process.exit(1);
   }
-});
+}
 
-app.listen(3000);
+startServer().catch(error => {
+  console.error('Fatal error:', error);
+  process.exit(1);
+});
