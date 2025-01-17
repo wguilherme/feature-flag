@@ -3,7 +3,6 @@ kind: Deployment
 metadata:
   name: hello-world-app
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: hello-world
@@ -13,8 +12,8 @@ spec:
         app: hello-world
       annotations:
         prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
         prometheus.io/port: "3000"
-        prometheus.io/path: "/metrics" 
     spec:
       containers:
       - name: hello-world
@@ -22,14 +21,11 @@ spec:
         imagePullPolicy: Never
         ports:
         - containerPort: 3000
-          name: metrics 
-        resources:
-          requests:
-            cpu: 100m
-            memory: 128Mi
-          limits:
-            cpu: 200m
-            memory: 256Mi
+        env:
+        - name: FLAGD_HOST
+          value: "flagd"
+        - name: FLAGD_PORT
+          value: "8013"
 ---
 apiVersion: v1
 kind: Service
@@ -37,16 +33,30 @@ metadata:
   name: hello-world-service
   annotations:
     prometheus.io/scrape: "true"
-    prometheus.io/port: "3000"
     prometheus.io/path: "/metrics"
+    prometheus.io/port: "3000"
 spec:
   selector:
     app: hello-world
   ports:
   - port: 80
     targetPort: 3000
-    name: web
-  - port: 3000
-    targetPort: 3000
-    name: metrics
-  type: ClusterIP
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hello-world-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: hello-world-app
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
