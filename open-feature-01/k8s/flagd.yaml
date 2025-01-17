@@ -1,0 +1,41 @@
+# flagd.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flagd
+spec:
+  selector:
+    matchLabels:
+      app: flagd
+  template:
+    metadata:
+      labels:
+        app: flagd
+    spec:
+      containers:
+      - name: flagd
+        image: ghcr.io/open-feature/flagd:latest
+        args:
+        - start
+        - --uri
+        - file:/flags/flags.yaml
+        ports:
+        - containerPort: 8013
+        volumeMounts:
+        - name: flags-volume
+          mountPath: /flags
+      volumes:
+      - name: flags-volume
+        configMap:
+          name: feature-flags
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flagd
+spec:
+  selector:
+    app: flagd
+  ports:
+  - port: 8013
+    targetPort: 8013
