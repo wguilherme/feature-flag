@@ -22,6 +22,8 @@ spec:
         ports:
         - containerPort: 3000
         env:
+        - name: FLAGD_MODE
+          value: "standalone"
         - name: FLAGD_HOST
           value: "flagd"
         - name: FLAGD_PORT
