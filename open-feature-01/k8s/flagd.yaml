@@ -18,7 +18,7 @@ spec:
         args:
         - start
         - --uri
-        - file:/flags/flags.yaml
+        - http://prometheus-provider:8017/flags.yaml
         - --port
         - "8013"
         - --management-port
@@ -28,13 +28,6 @@ spec:
           containerPort: 8013
         - name: management
           containerPort: 8014
-        volumeMounts:
-        - name: flags-volume
-          mountPath: /flags
-      volumes:
-      - name: flags-volume
-        configMap:
-          name: feature-flags
 ---
 apiVersion: v1
 kind: Service
