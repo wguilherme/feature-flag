@@ -1,24 +1,29 @@
 #!/bin/bash
 
 # Variáveis
+
+# flag mode
 FLAG_MODE ?= operator  # Pode ser 'operator' ou 'standalone'
+PORT_FORWARD = 3001
+SERVICE_NAME = hello-world-service-operator
+
+
+# commandds
 
 .PHONY: dev dev-k8s down start stop k8s-build k8s-deploy k8s-delete
 
-# Development with Docker Compose
 dev:
 	docker-compose up -d --build
 
-# Development with Kind/Kubernetes
 dev-k8s: k8s-deploy
-	@echo "Starting development with Kubernetes..."
+	@echo "Starting development with Kubernetes in $(FLAG_MODE) mode..."
+	@echo "Service will be available on http://localhost:$(PORT_FORWARD)"
 	@echo "Watching for changes in source code..."
 	@(trap 'kill 0' SIGINT; \
 		sleep 2; \
-		kubectl port-forward svc/hello-world-service 3000:80 & \
+		kubectl port-forward svc/$(SERVICE_NAME) $(PORT_FORWARD):80 & \
 		FLAG_MODE=$(FLAG_MODE) fswatch -o ./src/ ./k8s/ | while read f; do \
 			echo "Changes detected, rebuilding and redeploying..."; \
-			make k8s-deploy; \
 		done \
 	)
 
@@ -52,7 +57,7 @@ k8s-deploy: k8s-build
 	kubectl wait --for=condition=available deployment/hello-world-app --timeout=60s
 	@echo "Deployment is ready!"
 	@echo "You can access the service using port-forward:"
-	@echo "kubectl port-forward svc/hello-world-service 3000:80"
+	@echo "kubectl port-forward svc/$(SERVICE_NAME) $(PORT_FORWARD):80"
 
 k8s-delete:
 	@if [ "$(FLAG_MODE)" = "operator" ]; then \

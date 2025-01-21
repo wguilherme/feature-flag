@@ -24,9 +24,10 @@ metadata:
   name: feature-flag-source-operator
 spec:
   sources:
-  - source: default/app-flags-operator
-    provider: kubernetes
+    - source: default/app-flags-operator
+      provider: kubernetes
   port: 8013
+  managementPort: 8014
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -43,23 +44,25 @@ spec:
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/path: "/metrics"
-        prometheus.io/port: "3000"
+        prometheus.io/port: "8014"
         openfeature.dev/enabled: "true"
         openfeature.dev/featureflagsource: "default/feature-flag-source-operator"
     spec:
       containers:
-      - name: hello-world
-        image: hello-world-app:latest
-        imagePullPolicy: Never
-        ports:
-        - containerPort: 3000
-        env:
-        - name: FLAGD_MODE
-          value: "operator"
-        - name: FLAGD_HOST
-          value: "localhost"
-        - name: FLAGD_PORT
-          value: "8013"
+        - name: hello-world
+          image: hello-world-app:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000
+          env:
+            - name: FLAGD_MODE
+              value: "operator"
+            - name: FLAGD_HOST
+              value: "localhost"
+            - name: FLAGD_PORT
+              value: "8013"
+            - name: FLAGD_MANAGEMENT_PORT
+              value: "8014"
 ---
 apiVersion: v1
 kind: Service
@@ -68,10 +71,10 @@ metadata:
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/path: "/metrics"
-    prometheus.io/port: "3000"
+    prometheus.io/port: "8014"
 spec:
   selector:
     app: hello-world-operator
   ports:
-  - port: 80
-    targetPort: 3000
+    - port: 80
+      targetPort: 3000

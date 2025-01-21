@@ -17,20 +17,22 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 async function initializeOpenFeature() {
   const flagdMode = process.env.FLAGD_MODE || 'operator';
   console.log(`Initializing OpenFeature in ${flagdMode} mode`);
-  
+
   const host = process.env.FLAGD_HOST || (flagdMode === 'operator' ? 'localhost' : 'flagd');
   const port = process.env.FLAGD_PORT || '8013';
-  
+
   const provider = new FlagdProvider({
     host,
     port,
+    cache: false,
+    debug: true
   });
 
   try {
     // Espera 5 segundos antes de tentar conectar ao flagd
     console.log('Waiting for flagd to be ready...');
     await sleep(5000);
-    
+
     await OpenFeature.setProvider(provider);
     console.log('OpenFeature provider initialized successfully');
   } catch (error) {
@@ -48,15 +50,16 @@ app.get('/', async (req, res) => {
   try {
     const novaFuncao = await featureClient.getBooleanValue('nova-funcao', false);
     const welcomeMessage = await featureClient.getStringValue('welcome-message', 'Bem-vindo!');
-    
+
     res.json({
       message: welcomeMessage,
       novaFuncao,
-      mode: process.env.FLAGD_MODE || 'operator'
+      mode: process.env.FLAGD_MODE || 'operator',
+      debug: 'true'
     });
   } catch (error) {
     console.error('Error getting feature flag:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Error getting feature flag',
       message: 'Bem-vindo!',
       novaFuncao: false,
@@ -77,7 +80,7 @@ app.get('/metrics', async (req, res) => {
 
 // Endpoint de health check
 app.get('/health', (req, res) => {
-  res.json({ 
+  res.json({
     status: 'ok',
     mode: process.env.FLAGD_MODE || 'operator'
   });
