@@ -14,14 +14,14 @@ O objetivo deste P&D é:
 
 ### Ferramentas de Mercado
 
-| Solução | Tipo | Diferencial |
-|---------|------|-------------|
-| LaunchDarkly | Proprietário | Líder de mercado, suporte completo multi-stack |
-| Split.io | Proprietário | Forte em analytics e experimentação |
-| Flagsmith | Open Source | Self-hosted, boa documentação |
-| Unleash | Open Source | Foco em enterprise, suporte a GitOps |
-| GrowthBook | Open Source | Analytics avançado, A/B testing |
-| OpenFeature | Open Source (CNCF) | Especificação padronizada, provider-agnostic |
+| Solução | Tipo | Diferencial | Links |
+|---------|------|-------------|-------|
+| [LaunchDarkly](https://launchdarkly.com/) | Proprietário | Líder de mercado, suporte completo multi-stack | [Docs](https://docs.launchdarkly.com/home) |
+| [Split.io](https://www.split.io/) | Proprietário | Forte em analytics e experimentação | [Docs](https://help.split.io/hc/en-us) |
+| [Flagsmith](https://www.flagsmith.com/) | Open Source | Self-hosted, boa documentação | [Docs](https://docs.flagsmith.com/) |
+| [Unleash](https://www.getunleash.io/) | Open Source | Foco em enterprise, suporte a GitOps | [Docs](https://docs.getunleash.io/) |
+| [GrowthBook](https://www.growthbook.io/) | Open Source | Analytics avançado, A/B testing | [Docs](https://docs.growthbook.io/) |
+| [OpenFeature](https://openfeature.dev/) | Open Source (CNCF) | Especificação padronizada, provider-agnostic | [Docs](https://openfeature.dev/docs/reference/intro) |
 
 ### Comparativo Técnico
 
