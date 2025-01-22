@@ -1,0 +1,119 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: growthbook
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongodb-data
+  namespace: growthbook
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: growthbook-uploads
+  namespace: growthbook
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb
+  namespace: growthbook
+spec:
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+      - name: mongodb
+        image: mongo:latest
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: "root"
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: "password"
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - name: mongodb-data
+          mountPath: /data/db
+      volumes:
+      - name: mongodb-data
+        persistentVolumeClaim:
+          claimName: mongodb-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb
+  namespace: growthbook
+spec:
+  selector:
+    app: mongodb
+  ports:
+  - port: 27017
+    targetPort: 27017
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: growthbook
+  namespace: growthbook
+spec:
+  selector:
+    matchLabels:
+      app: growthbook
+  template:
+    metadata:
+      labels:
+        app: growthbook
+    spec:
+      containers:
+      - name: growthbook
+        image: growthbook/growthbook:latest
+        ports:
+        - containerPort: 3000
+        - containerPort: 3100
+        env:
+        - name: MONGODB_URI
+          value: "mongodb://root:password@mongodb:27017/growthbook?authSource=admin"
+        volumeMounts:
+        - name: growthbook-uploads
+          mountPath: /usr/local/src/app/packages/back-end/uploads
+      volumes:
+      - name: growthbook-uploads
+        persistentVolumeClaim:
+          claimName: growthbook-uploads
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: growthbook
+  namespace: growthbook
+spec:
+  selector:
+    app: growthbook
+  ports:
+  - name: app
+    port: 3000
+    targetPort: 3000
+  - name: api
+    port: 3100
+    targetPort: 3100

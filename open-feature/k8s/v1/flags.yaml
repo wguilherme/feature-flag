@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: feature-flags
+data:
+  flags.yaml: |
+    flags:
+      nova-funcao:
+        state: ENABLED
+        variants:
+          on: true
+          off: false
+        defaultVariant: "on"
+      welcome-message:
+        state: ENABLED
+        variants:
+          v1: "Bem-vindo ao nosso serviço!"
+          v2: "Olá! Parece que estamos enfrentando alguns problemas. Nossa equipe está trabalhando nisso!"
+        defaultVariant: "v1"

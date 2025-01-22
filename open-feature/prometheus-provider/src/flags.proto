@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package flags;
+
+service FlagProvider {
+  rpc ResolveString (EvaluationContext) returns (StringResolution) {}
+  rpc ResolveBool (EvaluationContext) returns (BoolResolution) {}
+  rpc ResolveFloat (EvaluationContext) returns (FloatResolution) {}
+  rpc ResolveObject (EvaluationContext) returns (ObjectResolution) {}
+}
+
+message EvaluationContext {
+  string flag_key = 1;
+  map<string, string> context = 2;
+}
+
+message StringResolution {
+  string value = 1;
+  string reason = 2;
+  string variant = 3;
+}
+
+message BoolResolution {
+  bool value = 1;
+  string reason = 2;
+  string variant = 3;
+}
+
+message FloatResolution {
+  double value = 1;
+  string reason = 2;
+  string variant = 3;
+}
+
+message ObjectResolution {
+  string value = 1;
+  string reason = 2;
+  string variant = 3;
+}
