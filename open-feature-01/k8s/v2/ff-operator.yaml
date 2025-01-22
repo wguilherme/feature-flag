@@ -10,13 +10,13 @@ spec:
         variants:
           "on": true
           "off": false
-        defaultVariant: "off"
+        defaultVariant: "on"
       welcome-message:
         state: "ENABLED"
         variants:
           "v1": "Bem-vindo ao nosso serviço (modo operator)!"
           "v2": "Olá! Parece que estamos enfrentando alguns problemas (modo operator). Nossa equipe está trabalhando nisso!"
-        defaultVariant: "v1"
+        defaultVariant: "v2"
 ---
 apiVersion: core.openfeature.dev/v1beta1
 kind: FeatureFlagSource

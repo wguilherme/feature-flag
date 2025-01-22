@@ -25,14 +25,22 @@ O objetivo deste P&D é:
 
 ### Comparativo Técnico
 
-| Característica | LaunchDarkly | Split.io | Flagsmith | Unleash | GrowthBook | OpenFeature |
+| Característica | GrowthBook | OpenFeature |
 |---------------|--------------|-----------|------------|---------|------------|-------------|
-| K8s Native | Não | Não | Não | Parcial | Não | Sim |
-| YAMLs Declarativos | Não | Não | Não | Sim | Não | Sim |
-| Self-hosted | Não | Não | Sim | Sim | Sim | N/A |
-| GitOps Ready | Parcial | Parcial | Não | Sim | Não | Sim |
-| Multi-tenant | Sim | Sim | Sim | Sim | Sim | N/A |
-| A/B Testing | Sim | Sim | Sim | Sim | Sim | Via Provider |
+| K8s Native | Não | Sim |
+| YAMLs Declarativos | Não | Sim |
+| Self-hosted | Sim | Sim |
+| GitOps Ready | Não | Sim |
+| Multi-tenant | Sim | Sim |
+| A/B Testing | Sim | Via Provider |
+
+##### Pontos à analisar (possívelmente no P&D):
+- Segurança,
+- Performance
+- Escalabilidade
+- Alta Disponibilidade
+- Análise de Risco
+- Custo
 
 ## Requisitos Essenciais Identificados
 
@@ -46,11 +54,11 @@ O objetivo deste P&D é:
 
 ### Não-Funcionais
 - Performance e baixa latência
-- Fallback seguro offline
-- Cache eficiente
+- Fallback seguro (offline)
+- Cache (eficiência e invalidação)
 - Auditoria de mudanças
-- Escalabilidade
-- Segurança e compliance
+<!-- - Escalabilidade -->
+<!-- - Segurança -->
 
 ### Cloud Native
 - Integração nativa com Kubernetes
@@ -80,9 +88,11 @@ O objetivo deste P&D é:
 - **Testes Beta**
   - Beta fechado (lista de usuários)
   - Beta aberto (opt-in)
-- **Dark Launch**
+
+<!-- Estudar sobre: -->
+<!-- - **Dark Launch**
   - Integração sem exposição
-  - Testes de carga reais
+  - Testes de carga reais -->
 
 #### Experimentação
 - **A/B Testing**
@@ -128,33 +138,17 @@ O objetivo deste P&D é:
 2. **Arquitetura**
    - Multi-tenant
    - Isolamento por serviço
-   - Alta disponibilidade
-   - Escalabilidade horizontal
+   - Alta disponibilidade (analisar)
+   - Escalabilidade horizontal (analisar)
 
 3. **Integração**
-   - OAuth/SSO
-   - API Gateway
    - SDKs oficiais
-   - Webhooks
+   - OAuth/SSO
+   - K8S
+   - GitOps
+   - YAMLs declarativos
+   - Prometheus
 
-#### Requisitos de Negócio
-1. **Governança**
-   - RBAC (Role-Based Access Control)
-   - Auditoria completa
-   - Compliance (LGPD)
-   - Ambientes segregados
-
-2. **Operacional**
-   - UI para gestão
-   - Documentação em português
-   - Suporte enterprise
-   - SLA definido
-
-3. **Custos**
-   - TCO previsível
-   - Modelo de licenciamento claro
-   - Custos por volume
-   - ROI mensurável
 
 ### 4. Considerações Adicionais TOTVS
 
@@ -212,10 +206,6 @@ Exemplo da arquitetura testada:
 
 ## Como Usar
 
-Cada implementação possui sua própria documentação detalhada:
-- [OpenFeature Implementation](./open-feature-01/README.md)
-- [GrowthBook Implementation](./growthbook-01/README.md)
-
 ## Conclusões e Recomendações
 
 ### Pontos Fortes do OpenFeature
@@ -224,6 +214,7 @@ Cada implementação possui sua própria documentação detalhada:
 - Excelente integração com Kubernetes
 - Suporte a múltiplos providers
 - Possui operator (flagd) para Kubernetes
+- Métricas no padrão Open Telemetry
 
 ### Pontos Fortes do GrowthBook
 - UI intuitiva
