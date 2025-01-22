@@ -23,16 +23,17 @@ O objetivo deste P&D é:
 | [GrowthBook](https://www.growthbook.io/) | Open Source | Analytics avançado, A/B testing | [Docs](https://docs.growthbook.io/) |
 | [OpenFeature](https://openfeature.dev/) | Open Source (CNCF) | Especificação padronizada, provider-agnostic | [Docs](https://openfeature.dev/docs/reference/intro) |
 
-### Comparativo Técnico
+### Comparativo
 
-| Característica | GrowthBook | OpenFeature |
-|---------------|--------------|-----------|------------|---------|------------|-------------|
-| K8s Native | Não | Sim |
-| YAMLs Declarativos | Não | Sim |
-| Self-hosted | Sim | Sim |
-| GitOps Ready | Não | Sim |
-| Multi-tenant | Sim | Sim |
-| A/B Testing | Sim | Via Provider |
+| Característica | GrowthBook | OpenFeature | Flipt |
+|---------------|------------|-------------|-------|
+| K8s Native | Não | Sim | Não |
+| YAMLs Declarativos | Não | Sim | Não |
+| Self-hosted | Sim | Sim | Sim |
+| GitOps Ready | Não | Sim | Sim |
+| Multi-tenant | Sim | Sim | Sim |
+| A/B Testing | Sim | Via Provider | Sim |
+| Provider Open Feature | - | Sim | Sim |
 
 ##### Pontos à analisar (possívelmente no P&D):
 - Segurança,
