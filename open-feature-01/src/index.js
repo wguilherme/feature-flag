@@ -37,12 +37,17 @@ const featureClient = OpenFeature.getClient('hello-world-app');
 app.get('/', async (req, res) => {
   try {
     const novaFuncao = await featureClient.getBooleanValue('nova-funcao', false);
-    const welcomeMessage = await featureClient.getStringValue('welcome-message', 'Bem-vindo!');
+
+    const flagd = await featureClient.getStringValue('welcome-message', 'Bem-vindo!');
+    const flipt = await featureClient.getStringValue('flipt_v1', 'fallback')
 
     res.json({
-      message: welcomeMessage,
       novaFuncao,
-      mode: process.env.FLAGD_MODE || 'operator'
+      mode: process.env.FLAGD_MODE || 'operator',
+      flags: {
+        flipt,
+        flagd
+      }
     });
   } catch (error) {
     console.error('Error getting feature flag:', error);

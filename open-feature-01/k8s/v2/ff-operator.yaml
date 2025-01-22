@@ -26,6 +26,8 @@ spec:
   sources:
     - source: default/app-flags-operator
       provider: kubernetes
+    - source: http://flipt:8080/api/v1
+      provider: flipt
   port: 8013
   managementPort: 8014
 ---
@@ -78,3 +80,36 @@ spec:
   ports:
     - port: 80
       targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flipt
+spec:
+  selector:
+    matchLabels:
+      app: flipt
+  template:
+    metadata:
+      labels:
+        app: flipt
+    spec:
+      containers:
+      - name: flipt
+        image: flipt/flipt:latest
+        ports:
+        - containerPort: 8080
+        - containerPort: 9000 # gRPC
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flipt
+spec:
+  selector:
+    app: flipt
+  ports:
+  - port: 8080
+    name: http
+  - port: 9000
+    name: grpc
