@@ -10,7 +10,7 @@ spec:
         variants:
           "on": true
           "off": false
-        defaultVariant: "on"
+        defaultVariant: "off"
       welcome-message:
         state: "ENABLED"
         variants:
@@ -26,10 +26,13 @@ spec:
   sources:
     - source: default/app-flags-operator
       provider: kubernetes
-    - source: http://flipt:8080/api/v1
-      provider: flipt
+    - source: http://flipt:8080/api/v1/evaluate
+      provider: http
   port: 8013
   managementPort: 8014
+  evaluator: json
+  logFormat: json
+  envVarPrefix: FLAGD
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -44,9 +47,6 @@ spec:
       labels:
         app: hello-world-operator
       annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/path: "/metrics"
-        prometheus.io/port: "8014"
         openfeature.dev/enabled: "true"
         openfeature.dev/featureflagsource: "default/feature-flag-source-operator"
     spec:
@@ -70,10 +70,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: hello-world-service-operator
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/path: "/metrics"
-    prometheus.io/port: "8014"
 spec:
   selector:
     app: hello-world-operator
@@ -95,11 +91,11 @@ spec:
         app: flipt
     spec:
       containers:
-      - name: flipt
-        image: flipt/flipt:latest
-        ports:
-        - containerPort: 8080
-        - containerPort: 9000 # gRPC
+        - name: flipt
+          image: flipt/flipt:latest
+          ports:
+            - containerPort: 8080
+            - containerPort: 9000 # gRPC
 ---
 apiVersion: v1
 kind: Service
@@ -109,7 +105,7 @@ spec:
   selector:
     app: flipt
   ports:
-  - port: 8080
-    name: http
-  - port: 9000
-    name: grpc
+    - port: 8080
+      name: http
+    - port: 9000
+      name: grpc

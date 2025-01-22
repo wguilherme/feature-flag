@@ -15,9 +15,6 @@ open-feature, official documentation:
 
 quickstart:
 
-// download cluster definition for kind:
-curl -sfL curl -sfL https://raw.githubusercontent.com/open-feature/openfeature.dev/main/static/samples/kind-cluster-quick-start.yaml > kind-cluster-quick-start.yaml
-// create kind cluster
 kind create cluster --config kind-cluster-quick-start.yaml
 
 
@@ -30,7 +27,6 @@ steps:
 
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.yaml && \
 kubectl wait --timeout=60s --for condition=Available=True deploy --all -n 'cert-manager'
-
 helm repo add openfeature https://open-feature.github.io/open-feature-operator/ && \
 helm repo update && \
 helm upgrade --install open-feature-operator openfeature/open-feature-operator
@@ -53,6 +49,9 @@ kubectl get featureflagsources
 // troubleshooting
 // deployment logs
 kubectl logs deployment/open-feature-demo-deployment
+
+// logs open-feature operator system controller manager
+kubectl logs -n open-feature-operator-system deployment/open-feature-operator-controller-manager
 
 
 
