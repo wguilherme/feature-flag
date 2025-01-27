@@ -1,0 +1,23 @@
+FROM node:20-alpine AS base
+
+# Install dependencies for node-gyp and other build tools
+RUN apk add --no-cache python3 make g++ git
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY nx.json ./
+COPY tsconfig.base.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy source code
+COPY . .
+
+# Generate Prisma client (if you use Prisma)
+# RUN npx prisma generate
+
+# Build NX cache
+RUN npx nx run-many --target=build --all

@@ -1,15 +1,4 @@
-# Feature Flag
-
-## O que são Feature Flags?
-
-De forma simples, você pode pensar em uma chave de funcionalidade (feature flag) como uma declaração se/senão que pode ser controlada durante a execução da aplicação. As chaves de funcionalidade permitem que o comportamento da aplicação seja alterado sem a necessidade de implantar novo código.
-
-Esta capacidade serve a diversos propósitos. Você pode reduzir a necessidade de ramificações (branches) de funcionalidades de longa duração. Você pode ocultar funcionalidades em desenvolvimento dos usuários finais, enquanto ainda as expõe para testes internos. Você pode realizar implantações canário (canary releases) - lançando uma nova funcionalidade inicialmente para um pequeno subconjunto de usuários. Você pode realizar testes A/B. Você pode degradar com segurança partes de um sistema em produção que estejam enfrentando uma interrupção. Você pode restringir o acesso a funcionalidades específicas do produto com base em características do usuário, como localização geográfica ou endereço IP, por razões de usabilidade, conformidade ou licenciamento.
-
-As chaves de funcionalidade são dinâmicas; elas são avaliadas durante a execução. Muitos dos casos de uso descritos acima também exigem que as chaves de funcionalidade sejam sensíveis ao contexto - uma decisão de ativação deve levar em conta fatores como qual usuário está fazendo uma requisição web. Além disso, a configuração por trás das decisões de ativação também precisa ser dinâmica para suportar casos de uso como implantações canário, onde você gradualmente disponibiliza uma funcionalidade para mais usuários sem precisar reimplantar ou reiniciar nada.
-
-Considerando todos estes requisitos (junto com outros como interface administrativa, trilhas de auditoria, gerenciamento de ambiente e mais), fica claro que o uso completo de chaves de funcionalidade requer um sistema de chaveamento - tipicamente um serviço independente de chaveamento de funcionalidades junto com uma biblioteca cliente que interage com esse serviço.
-
+# Benchmark - Feature Flag
 
 ## Objetivo
 
@@ -219,7 +208,7 @@ Este repositório contém exemplos práticos de implementação usando diferente
 
 Exemplo da arquitetura testada:
 
-![OpenFeature com Flagd](./docs/images/architecture-comparison.drawio.png)
+![OpenFeature com Flagd](./images/architecture-comparison.drawio.png)
 
 
 2. **GrowthBook**
