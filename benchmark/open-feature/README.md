@@ -38,11 +38,6 @@ Este comando irá:
 make k8s-deploy
 ```
 
-3. **Acessar a aplicação**
-
-```bash
-make dev
-```
 
 A aplicação estará disponível em http://localhost:3001
 
@@ -56,7 +51,7 @@ O projeto suporta dois modos de operação:
 Para alternar entre os modos, use a variável `FLAG_MODE`:
 
 ```bash
-# Operator Mode
+# Operator Mode (default)
 FLAG_MODE=operator make dev
 
 # Standalone Mode
@@ -65,7 +60,7 @@ FLAG_MODE=standalone make dev
 
 ### Comandos disponíveis
 
-- `make dev`: Inicia o ambiente de desenvolvimento com hot-reload
+- `make dev`: Sobe o docker-compose
 - `make k8s-build`: Constrói a imagem Docker
 - `make k8s-deploy`: Implanta a aplicação no Kubernetes
 - `make k8s-delete`: Remove a aplicação do Kubernetes

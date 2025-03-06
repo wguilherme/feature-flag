@@ -10,7 +10,7 @@ DEPLOYMENT_NAME = hello-world-app-operator
 dev:
 	docker-compose up -d --build
 
-dev-k8s: k8s-deploy
+dev-k8s: kind k8s-deploy
 	@echo "Starting development with Kubernetes in $(FLAG_MODE) mode..."
 	@echo "Service will be available on http://localhost:$(PORT_FORWARD)"
 	@echo "Watching for changes in source code..."
@@ -81,5 +81,5 @@ kind:
 	helm repo update && \
 	helm upgrade --install open-feature-operator openfeature/open-feature-operator && \
 	echo "Aguardando OpenFeature Operator estar pronto..." && \
-	kubectl wait --timeout=60s --for condition=Available=True deploy --all -n default && \
+	kubectl wait --timeout=60s --for condition=Available=True deploy/open-feature-operator-controller-manager -n open-feature-operator-system && \
 	echo "Cluster está pronto com OpenFeature Operator instalado"

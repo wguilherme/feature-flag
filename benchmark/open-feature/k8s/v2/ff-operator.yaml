@@ -2,6 +2,7 @@ apiVersion: core.openfeature.dev/v1beta1
 kind: FeatureFlag
 metadata:
   name: app-flags-operator
+  namespace: default
 spec:
   flagSpec:
     flags:
@@ -26,8 +27,8 @@ spec:
   sources:
     - source: default/app-flags-operator
       provider: kubernetes
-    - source: http://flipt:8080/api/v1/evaluate
-      provider: http
+    # - source: http://flipt:8080/api/v1/evaluate
+    #   provider: http
   port: 8013
   managementPort: 8014
   evaluator: json
